@@ -1,9 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+import { VueQueryPlugin } from '@tanstack/vue-query'
 import App from './App.vue'
 
-const app = createApp(App)
-
-app.use(createPinia())
-
-app.mount('#app')
+createApp(App).use(createPinia()).use(VueQueryPlugin).mount('#app')
