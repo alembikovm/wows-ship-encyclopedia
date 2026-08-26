@@ -17,7 +17,7 @@ export default defineConfig({
       '/vortex': {
         target: 'https://vortex.worldofwarships.eu',
         changeOrigin: true,
-        rewrite: (p: string) => p.replace(/^\/vortex/, ''),
+        rewrite: (path) => path.replace(/^\/vortex/, ''),
       },
     },
   },
