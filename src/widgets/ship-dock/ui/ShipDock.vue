@@ -10,7 +10,7 @@ const props = defineProps<{
   selectedShipId: string | null
 }>()
 
-const emit = defineEmits<{ select(shipId: string): void }>()
+const emit = defineEmits<{ select: [shipId: string] }>()
 
 const { rowCount, columns, columnWidth, dockHeight } = useDockLayout(toRef(props, 'ships'))
 </script>

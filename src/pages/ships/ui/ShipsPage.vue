@@ -1,6 +1,5 @@
-<!-- src/pages/ships/ui/ShipsPage.vue -->
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useEncyclopedia } from '@/entities/ship'
 import { ShipStage } from '@/widgets/ship-stage'
 import { ShipDock } from '@/widgets/ship-dock'
@@ -39,8 +38,6 @@ const filterStore = useShipFilterStore()
         Some reference data is missing: {{ degradedSources.join(', ') }}
       </p>
 
-      <!-- The empty state replaces the stage, never the dock: filters must stay
-           reachable so the user can undo whatever emptied the list. -->
       <p v-if="!visibleShips.length" class="ships-page__empty">
         No ships match the selected filters.
       </p>

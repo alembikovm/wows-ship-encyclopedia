@@ -1,4 +1,4 @@
-import type { VehiclesResponse, NationDto, VehicleTypeDto } from '@/shared/api/enciclopediaDto'
+import type { VehiclesResponse, NationDto, VehicleTypeDto } from '@/shared/api/encyclopediaDto'
 import { SHIP_TYPE_TAGS, type Ship, type ShipRarity, type ShipTypeId } from '../model/ship'
 
 interface EncyclopediaDictionaries {

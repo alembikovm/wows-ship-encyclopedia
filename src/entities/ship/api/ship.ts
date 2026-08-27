@@ -7,10 +7,9 @@ import type {
   NationsResponse,
   VehicleTypesResponse,
   MediaPathResponse,
-} from '@/shared/api/enciclopediaDto'
+} from '@/shared/api/encyclopediaDto'
 import { normalizeShips } from './normalizeShips'
 
-// The encyclopedia is a static reference: nothing to refetch, nothing to invalidate.
 const STATIC_REFERENCE_QUERY = { staleTime: Infinity, gcTime: Infinity, retry: 2 } as const
 
 export type DegradedSource = 'nations' | 'vehicleTypes'
@@ -34,8 +33,6 @@ export function useEncyclopedia() {
     ...STATIC_REFERENCE_QUERY,
   })
 
-  // Dictionaries are ~23 KB and settle instantly. Waiting for them lets us
-  // normalize inside queryFn, so the 19.7 MB raw payload is never cached.
   const areDictionariesSettled = computed(
     () =>
       !nationsQuery.isPending.value &&

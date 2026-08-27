@@ -7,7 +7,7 @@ import type {
   NationsResponse,
   VehicleTypesResponse,
   MediaPathResponse,
-} from '@/shared/api/enciclopediaDto'
+} from '@/shared/api/encyclopediaDto'
 import { normalizeShips } from './normalizeShips'
 import { normalizeNations, normalizeShipTypes } from './normalizeReference'
 

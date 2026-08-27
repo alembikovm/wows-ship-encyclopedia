@@ -12,7 +12,8 @@
     "type-check": "vue-tsc --build",
     "lint": "run-s \"lint:*\"",
     "lint:eslint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write --experimental-cli src/",
+    "verify": "npm run type-check && npm run lint && npm run test:unit"
   },
   "dependencies": {
     "@tanstack/vue-query": "^5.102.3",

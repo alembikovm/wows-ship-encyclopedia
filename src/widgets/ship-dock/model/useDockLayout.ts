@@ -1,4 +1,4 @@
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, toValue, type MaybeRefOrGetter } from 'vue'
 import { resolveRowCount, chunkIntoColumns, type Column } from '@/shared/lib/dockLayout'
 import type { Ship } from '@/entities/ship'
 
@@ -6,7 +6,7 @@ export const TILE_WIDTH_PX = 118
 export const TILE_HEIGHT_PX = 66
 export const TILE_GAP_PX = 2
 
-export function useDockLayout(ships: Ship[]) {
+export function useDockLayout(ships: MaybeRefOrGetter<Ship[]>) {
   const viewportHeight = ref(window.innerHeight)
 
   function syncViewportHeight() {
@@ -23,15 +23,13 @@ export function useDockLayout(ships: Ship[]) {
 
   const rowCount = computed(() => resolveRowCount(viewportHeight.value))
 
-  const columns = computed<Column<Ship>[]>(() => chunkIntoColumns(ships.value, rowCount.value))
+  const columns = computed<Column<Ship>[]>(() => chunkIntoColumns(toValue(ships), rowCount.value))
 
   const columnWidth = computed(() => TILE_WIDTH_PX + TILE_GAP_PX)
 
   const dockHeight = computed(
     () => rowCount.value * TILE_HEIGHT_PX + (rowCount.value - 1) * TILE_GAP_PX,
   )
-
-  console.log('inside useDockLayout, ships.value:', ships.value?.length)
 
   return {
     rowCount,
