@@ -9,6 +9,7 @@ import type {
   MediaPathResponse,
 } from '@/shared/api/enciclopediaDto'
 import { normalizeShips } from './normalizeShips'
+import { normalizeNations, normalizeShipTypes } from './normalizeReference'
 
 const STATIC_REFERENCE_QUERY = { staleTime: Infinity, gcTime: Infinity, retry: 2 } as const
 
@@ -33,6 +34,8 @@ export function useEncyclopedia() {
     ...STATIC_REFERENCE_QUERY,
   })
 
+  const mediaPath = computed(() => mediaPathQuery.data.value?.data ?? FALLBACK_MEDIA_PATH)
+
   const areDictionariesSettled = computed(
     () =>
       !nationsQuery.isPending.value &&
@@ -48,7 +51,7 @@ export function useEncyclopedia() {
       return normalizeShips(response, {
         nations: nationsQuery.data.value?.data ?? [],
         vehicleTypes: vehicleTypesQuery.data.value?.data ?? {},
-        mediaPath: mediaPathQuery.data.value?.data ?? FALLBACK_MEDIA_PATH,
+        mediaPath: mediaPath.value,
       })
     },
     ...STATIC_REFERENCE_QUERY,
@@ -64,6 +67,10 @@ export function useEncyclopedia() {
   return {
     ships: computed(() => shipsQuery.data.value ?? []),
     degradedSources,
+    nations: computed(() => normalizeNations(nationsQuery.data.value?.data ?? [], mediaPath.value)),
+    shipTypes: computed(() =>
+      normalizeShipTypes(vehicleTypesQuery.data.value?.data ?? {}, mediaPath.value),
+    ),
     isLoading: computed(() => !areDictionariesSettled.value || shipsQuery.isPending.value),
     hasFatalError: shipsQuery.isError,
     retry: () => shipsQuery.refetch(),

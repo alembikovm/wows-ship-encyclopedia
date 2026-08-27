@@ -1,0 +1,4 @@
+export { default as ShipFilterPanel } from './ui/ShipFilterPanel.vue'
+export { useShipFilterStore } from './model/filterStore'
+export { matchesFilter, countActiveFilters, EMPTY_FILTER_STATE } from './model/shipFilter'
+export type { ShipFilterState } from './model/shipFilter'

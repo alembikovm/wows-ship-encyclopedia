@@ -15,11 +15,18 @@
   padding: 0;
 }
 
+html,
+body,
+#app {
+  height: 100%;
+}
+
 body {
   background: var(--color-background);
   color: var(--color-text);
   font-family: system-ui, sans-serif;
   line-height: 1.45;
+  overflow: hidden;
 }
 
 :focus-visible {

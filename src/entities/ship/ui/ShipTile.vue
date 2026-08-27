@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Ship } from '../../model/ship'
+import type { Ship } from '../model/ship'
 
 const TIER_NUMERALS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI']
 

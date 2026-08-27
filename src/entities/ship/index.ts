@@ -1,4 +1,6 @@
 export { useEncyclopedia, type DegradedSource } from './api/useEncyclopedia'
-export { normalizeShips } from './api/normalizeShips'
 export { default as ShipTile } from './ui/ShipTile.vue'
 export { SHIP_TYPE_TAGS, type Ship, type ShipRarity, type ShipTypeId } from './model/ship'
+export { default as ShipDetails } from './ui/ShipDetails.vue'
+export { normalizeNations, normalizeShipTypes } from './api/normalizeReference'
+export type { NationOption, ShipTypeOption } from './model/encyclopediaReference'
