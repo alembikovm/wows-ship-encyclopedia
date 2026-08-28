@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
+
 import { RecycleScroller } from 'vue-virtual-scroller'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 import { ShipTile, type Ship } from '@/entities/ship'
@@ -15,7 +17,7 @@ const emit = defineEmits<{ select: [shipId: string] }>()
 
 const { rowCount, columns, columnWidth, dockHeight } = useDockLayout(() => props.ships)
 
-const scrollerRef = ref<InstanceType<typeof RecycleScroller> | null>(null)
+const scrollerRef = ref<ComponentPublicInstance | null>(null)
 
 const { canScrollBackward, canScrollForward, scrollByPage } = useHorizontalScroll(
   () => (scrollerRef.value?.$el as HTMLElement | undefined) ?? null,

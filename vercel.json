@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/vortex/:path*", "destination": "https://vortex.worldofwarships.eu/:path*" }
+  ]
+}
