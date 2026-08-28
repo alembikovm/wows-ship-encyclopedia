@@ -6,7 +6,7 @@ describe('resolveRowCount', () => {
     [1080, 3],
     [900, 3],
     [800, 3],
-    [700, 3],
+    [700, 2],
     [640, 2],
     [0, 2],
   ])('viewportHeight %i should resolve to rowCount %i', (viewportHeight, expectedRowCount) => {

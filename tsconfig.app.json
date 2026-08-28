@@ -9,6 +9,7 @@
     "exactOptionalPropertyTypes": true,
     "noImplicitOverride": true,
     "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
 
     // Path mapping for cleaner imports.
     "paths": {
