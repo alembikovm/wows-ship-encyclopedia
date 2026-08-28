@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useEncyclopedia } from '@/entities/ship'
+import { useEncyclopedia, ShipDetails } from '@/entities/ship'
 import { ShipStage } from '@/widgets/ship-stage'
 import { ShipDock } from '@/widgets/ship-dock'
 import { ShipFilterPanel, useShipFilterStore, matchesFilter } from '@/features/filter-ships'
 import { useShipSelection } from '../model/useShipSelection'
+import { ShipSearchInput } from '@/features/filter-ships'
 
 const { ships, nations, shipTypes, degradedSources, isLoading, hasFatalError, retry } =
   useEncyclopedia()
+
+const filterStore = useShipFilterStore()
 
 const visibleShips = computed(() =>
   ships.value.filter((ship) => matchesFilter(ship, filterStore.filter)),
@@ -20,8 +23,6 @@ const isFilterPanelOpen = ref(false)
 function toggleFilterPanel(): void {
   isFilterPanelOpen.value = !isFilterPanelOpen.value
 }
-
-const filterStore = useShipFilterStore()
 </script>
 
 <template>
@@ -41,7 +42,19 @@ const filterStore = useShipFilterStore()
       <p v-if="!visibleShips.length" class="ships-page__empty">
         No ships match the selected filters.
       </p>
-      <ShipStage v-else :ship="selectedShip" />
+
+      <div v-else class="ships-page__viewport">
+        <header class="ships-page__header">
+          <ShipSearchInput class="ships-page__search" />
+          <p class="ships-page__count">{{ visibleShips.length }} of {{ ships.length }}</p>
+        </header>
+
+        <ShipStage :ship="selectedShip" />
+
+        <section v-if="selectedShip" class="ships-page__details">
+          <ShipDetails :ship="selectedShip" />
+        </section>
+      </div>
 
       <div class="ships-page__dock-area">
         <ShipFilterPanel v-if="isFilterPanelOpen" :nations="nations" :ship-types="shipTypes" />
@@ -78,10 +91,30 @@ const filterStore = useShipFilterStore()
   overflow: hidden;
 }
 
+.ships-page__viewport {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.ships-page__details {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--color-border);
+}
+
+.ships-page__status,
 .ships-page__empty {
   flex: 1;
   display: grid;
   place-content: center;
+  gap: 16px;
+  justify-items: center;
+  padding: 24px;
+  text-align: center;
   color: var(--color-text-muted);
 }
 
@@ -94,16 +127,8 @@ const filterStore = useShipFilterStore()
   color: #e6b7b1;
 }
 
-.ships-page__status {
-  flex: 1;
-  display: grid;
-  place-content: center;
-  gap: 16px;
-  justify-items: center;
-  color: var(--color-text-muted);
-}
-
 .ships-page__retry {
+  min-height: 44px;
   padding: 10px 20px;
   background: transparent;
   border: 1px solid var(--color-border);
@@ -134,7 +159,7 @@ const filterStore = useShipFilterStore()
 
 .ships-page__filter-toggle {
   flex: none;
-  width: 88px;
+  width: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -166,5 +191,60 @@ const filterStore = useShipFilterStore()
   border-radius: 9px;
   font-size: 11px;
   font-weight: 600;
+}
+
+.ships-page__header {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(6, 13, 18, 0.94);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ships-page__search {
+  flex: 1;
+  min-width: 0;
+}
+
+.ships-page__count {
+  flex: none;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+@media (min-width: 769px) {
+  .ships-page__header {
+    padding: 8px 16px;
+  }
+
+  .ships-page__search {
+    flex: none;
+    width: 264px;
+  }
+}
+
+@media (min-width: 769px) {
+  .ships-page__viewport {
+    position: relative;
+  }
+
+  .ships-page__details {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 340px;
+    flex: none;
+    background: rgba(9, 20, 28, 0.9);
+    border-top: none;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .ships-page__filter-toggle {
+    width: 88px;
+  }
 }
 </style>

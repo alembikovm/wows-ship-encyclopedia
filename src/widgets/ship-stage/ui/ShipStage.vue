@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ShipDetails, type Ship } from '@/entities/ship'
+import type { Ship } from '@/entities/ship'
 
 const TIER_NUMERALS = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI']
 
@@ -31,10 +31,6 @@ function hideBrokenImage(event: Event): void {
         </p>
         <h2 class="ship-stage__plate-name">{{ props.ship.name }}</h2>
       </div>
-
-      <aside class="ship-stage__panel">
-        <ShipDetails :ship="props.ship" />
-      </aside>
     </template>
   </section>
 </template>
@@ -42,8 +38,8 @@ function hideBrokenImage(event: Event): void {
 <style scoped>
 .ship-stage {
   position: relative;
-  flex: 1;
-  min-height: 0;
+  flex: none;
+  height: 270px;
   overflow: hidden;
 }
 
@@ -61,44 +57,67 @@ function hideBrokenImage(event: Event): void {
 
 .ship-stage__artwork {
   position: absolute;
-  left: 44%;
-  top: 54%;
+  left: 50%;
+  top: 48%;
   transform: translate(-50%, -50%);
-  width: min(62%, 760px);
+  width: 92%;
   height: auto;
-  filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.55));
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.55));
 }
 
 .ship-stage__plate {
   position: absolute;
-  left: 24px;
-  bottom: 24px;
-  max-width: 300px;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
 }
 
 .ship-stage__plate-tier {
-  font-size: 11px;
-  letter-spacing: 0.24em;
+  font-size: 10px;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-accent);
 }
 
 .ship-stage__plate-name {
-  font-size: 38px;
+  font-size: 26px;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.07em;
   text-transform: uppercase;
   line-height: 1.05;
-  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 3px 14px rgba(0, 0, 0, 0.85);
 }
 
-.ship-stage__panel {
-  position: absolute;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 340px;
-  background: rgba(9, 20, 28, 0.3);
-  border-left: 1px solid var(--color-border);
+@media (min-width: 769px) {
+  .ship-stage {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+  }
+
+  .ship-stage__artwork {
+    left: 44%;
+    top: 54%;
+    width: min(62%, 760px);
+    filter: drop-shadow(0 22px 30px rgba(0, 0, 0, 0.55));
+  }
+
+  .ship-stage__plate {
+    left: 24px;
+    right: auto;
+    bottom: 24px;
+    max-width: 300px;
+  }
+
+  .ship-stage__plate-tier {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+  }
+
+  .ship-stage__plate-name {
+    font-size: 38px;
+    letter-spacing: 0.08em;
+    text-shadow: 0 3px 16px rgba(0, 0, 0, 0.8);
+  }
 }
 </style>

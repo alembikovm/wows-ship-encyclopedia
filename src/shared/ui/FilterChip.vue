@@ -24,7 +24,7 @@ defineProps<{
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  min-height: 32px;
+  min-height: 44px;
   padding: 0 10px;
   background: #101f2a;
   border: 1px solid var(--color-border);
@@ -54,5 +54,11 @@ defineProps<{
   height: 17px;
   object-fit: contain;
   flex: none;
+}
+
+@media (min-width: 769px) {
+  .filter-chip {
+    min-height: 32px;
+  }
 }
 </style>

@@ -1,5 +1,5 @@
 const ROW_COUNT_BREAKPOINTS = [
-  { minViewportHeight: 700, rowCount: 3 },
+  { minViewportHeight: 768, rowCount: 3 },
   { minViewportHeight: 0, rowCount: 2 },
 ] as const
 

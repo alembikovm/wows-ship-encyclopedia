@@ -73,14 +73,13 @@ const filterStore = useShipFilterStore()
 
 <style scoped>
 .ship-filter-panel {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 24px;
-  align-items: start;
-  padding: 16px 24px;
-  /* 29 chips do not fit above the dock — the panel scrolls instead. */
-  max-height: 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px 12px;
+  max-height: 50dvh;
   overflow-y: auto;
+  overscroll-behavior: contain;
   background: rgba(9, 20, 28, 0.97);
   border-top: 1px solid var(--color-accent);
 }
@@ -110,14 +109,9 @@ const filterStore = useShipFilterStore()
 }
 
 .ship-filter-panel__actions {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  position: sticky;
-  top: 0;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-width: 170px;
 }
 
 .ship-filter-panel__reset {
@@ -135,5 +129,28 @@ const filterStore = useShipFilterStore()
 .ship-filter-panel__reset:hover {
   border-color: #b0392c;
   color: #e0a49c;
+}
+
+@media (min-width: 769px) {
+  .ship-filter-panel {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: start;
+    padding: 16px 24px;
+    max-height: 250px;
+  }
+
+  .ship-filter-panel__group {
+    grid-column: 1;
+  }
+
+  .ship-filter-panel__actions {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    position: sticky;
+    top: 0;
+    min-width: 170px;
+  }
 }
 </style>
