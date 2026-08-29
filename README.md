@@ -18,7 +18,7 @@ npm run dev
 ## Stack
 
 Vue 3 + TypeScript + Vite. Pinia for filter state, `@tanstack/vue-query` for loading and
-retries, `vue-virtual-scroller` for the dock. Native CSS.
+retries, `vue-virtual-scroller` for the dock. Native CSS. GSAP for stage animations.
 
 ## Architecture
 
@@ -52,6 +52,9 @@ follows viewport height, so rotating re-chunks the dock.
 
 Vortex sends no CORS headers, so requests go to a same-origin path (`/vortex/*`) - proxied
 by Vite in development and by a CDN rewrite in production.
+
+## Animations
+Used GSAP for ship switching animations.
 
 ## Error handling
 
