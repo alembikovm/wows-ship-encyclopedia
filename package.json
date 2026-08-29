@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@tanstack/vue-query": "^5.102.3",
+    "gsap": "^3.15.0",
     "pinia": "^4.0.2",
     "vue": "^3.5.40",
     "vue-virtual-scroller": "^3.0.5"

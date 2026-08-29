@@ -1,37 +1,102 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+import gsap from 'gsap'
 import type { Ship } from '@/entities/ship'
 
 const TIER_NUMERALS = ['', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI']
 
 const props = defineProps<{ ship: Ship | null }>()
 
+const stageRef = ref<HTMLElement | null>(null)
+
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 function hideBrokenImage(event: Event): void {
   const image = event.target as HTMLImageElement
   image.style.visibility = 'hidden'
 }
+
+function animateArtworkIn(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  gsap.fromTo(
+    element,
+    { opacity: 0, scale: 0.97, xPercent: -50, yPercent: -50 },
+    {
+      opacity: 1,
+      scale: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+      onComplete: done,
+      onInterrupt: done,
+    },
+  )
+}
+
+function animateArtworkOut(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  gsap.killTweensOf(element)
+  gsap.to(element, {
+    opacity: 0,
+    scale: 1.02,
+    xPercent: -50,
+    yPercent: -50,
+    duration: 0.2,
+    ease: 'power2.in',
+    onComplete: done,
+    onInterrupt: done,
+  })
+}
+
+function animatePlateIn(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  gsap.fromTo(
+    element,
+    { opacity: 0, x: -12 },
+    { opacity: 1, x: 0, duration: 0.24, ease: 'power2.out', onComplete: done, onInterrupt: done },
+  )
+}
+
+function animatePlateOut(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  gsap.killTweensOf(element)
+  gsap.to(element, {
+    opacity: 0,
+    x: 8,
+    duration: 0.18,
+    onComplete: done,
+    onInterrupt: done,
+  })
+}
 </script>
 
 <template>
-  <section class="ship-stage">
+  <section ref="stageRef" class="ship-stage">
     <div class="ship-stage__sky" />
     <div class="ship-stage__sea" />
 
-    <template v-if="props.ship">
+    <Transition :css="false" mode="out-in" @enter="animateArtworkIn" @leave="animateArtworkOut">
       <img
+        v-if="props.ship"
+        :key="props.ship.id"
         class="ship-stage__artwork"
         :src="props.ship.detailImageUrl"
         :alt="props.ship.name"
         fetchpriority="high"
         @error="hideBrokenImage"
       />
-
-      <div class="ship-stage__plate">
+    </Transition>
+    <Transition :css="false" mode="out-in" @enter="animatePlateIn" @leave="animatePlateOut">
+      <div v-if="props.ship" :key="props.ship.id" class="ship-stage__plate">
         <p class="ship-stage__plate-tier">
           Tier {{ TIER_NUMERALS[props.ship.tier] }} · {{ props.ship.typeName }}
         </p>
         <h2 class="ship-stage__plate-name">{{ props.ship.name }}</h2>
       </div>
-    </template>
+    </Transition>
   </section>
 </template>
 
