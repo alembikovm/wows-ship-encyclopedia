@@ -30,18 +30,11 @@ into plain fields at the boundary.
 Four endpoints: `vehicles`, `nations`, `vehicle_types_common`, `media_path`. The last three
 are dictionaries, joined into the ship model once during normalization.
 
-`vehicles` is 19.7 MB, most of them is localization for 19 languages. There is no
-pagination. Filters span the full set anyway.
-
-A BFF layer running the same normalization would cut this, but a server is overhead for the task.
 
 ## Performance
 
-Normalization runs inside `queryFn`, so the raw 19.7 MB never reaches the query cache used. 
-
-Measured: LCP, CLS, INP. LCP is bound by the payload, not by images: the
-artwork can't start loading until the ship list is fetched and parsed. Same BFF caveat.
-
+Added /api/ships-index BFF, cached per Vercel region
+Normalization runs inside `queryFn`.
 ## Responsiveness
 
 Mobile-first; desktop layout from 769px. The stage is a fixed band on mobile with the

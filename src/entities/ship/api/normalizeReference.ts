@@ -1,5 +1,5 @@
-import type { NationDto, VehicleTypeDto } from '@/shared/api/encyclopediaDto'
-import type { NationOption, ShipTypeOption } from '@/entities/ship/model/encyclopediaReference'
+import type { NationDto, VehicleTypeDto } from '../../../shared/api/encyclopediaDto'
+import type { NationOption, ShipTypeOption } from '../model/encyclopediaReference'
 
 const LOCALE = 'en'
 

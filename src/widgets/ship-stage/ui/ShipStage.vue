@@ -86,6 +86,7 @@ function animatePlateOut(element: Element, done: () => void): void {
         :src="props.ship.detailImageUrl"
         :alt="props.ship.name"
         fetchpriority="high"
+        loading="eager"
         @error="hideBrokenImage"
       />
     </Transition>

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import gsap from 'gsap'
 import { useEncyclopedia, ShipDetails } from '@/entities/ship'
 import { ShipStage } from '@/widgets/ship-stage'
 import { ShipDock } from '@/widgets/ship-dock'
@@ -23,11 +24,52 @@ const isFilterPanelOpen = ref(false)
 function toggleFilterPanel(): void {
   isFilterPanelOpen.value = !isFilterPanelOpen.value
 }
+
+const prefersReducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+function animateFilterPanelIn(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  const el = element as HTMLElement
+  const targetHeight = el.scrollHeight
+
+  gsap.fromTo(
+    el,
+    { height: 0, opacity: 0, overflow: 'hidden' },
+    {
+      height: targetHeight,
+      opacity: 1,
+      duration: 0.28,
+      ease: 'power2.out',
+      onComplete: () => {
+        gsap.set(el, { clearProps: 'height,opacity,overflow' })
+        done()
+      },
+      onInterrupt: done,
+    },
+  )
+}
+
+function animateFilterPanelOut(element: Element, done: () => void): void {
+  if (prefersReducedMotion()) return done()
+
+  const el = element as HTMLElement
+  gsap.killTweensOf(el)
+  gsap.to(el, {
+    height: 0,
+    opacity: 0,
+    overflow: 'hidden',
+    duration: 0.22,
+    ease: 'power2.in',
+    onComplete: done,
+    onInterrupt: done,
+  })
+}
 </script>
 
 <template>
   <main class="ships-page">
-    <p v-if="isLoading" class="ships-page__status">Loading encyclopedia…</p>
+    <p v-if="isLoading" class="ships-page__status">Loading page…</p>
 
     <div v-else-if="hasFatalError" class="ships-page__status">
       <p>The encyclopedia service is unavailable.</p>
@@ -57,7 +99,13 @@ function toggleFilterPanel(): void {
       </div>
 
       <div class="ships-page__dock-area">
-        <ShipFilterPanel v-if="isFilterPanelOpen" :nations="nations" :ship-types="shipTypes" />
+        <Transition :css="false" @enter="animateFilterPanelIn" @leave="animateFilterPanelOut">
+          <ShipFilterPanel
+            v-if="isFilterPanelOpen"
+            :nations="nations"
+            :ship-types="shipTypes"
+          />
+        </Transition>
 
         <div class="ships-page__dock">
           <button
@@ -247,4 +295,5 @@ function toggleFilterPanel(): void {
     width: 88px;
   }
 }
+
 </style>

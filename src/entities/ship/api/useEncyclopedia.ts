@@ -1,78 +1,37 @@
 import { computed } from 'vue'
 import { useQuery } from '@tanstack/vue-query'
-import { ENDPOINTS, FALLBACK_MEDIA_PATH } from '@/shared/api/endpoints'
 import { fetchJson } from '@/shared/api/httpClient'
-import type {
-  VehiclesResponse,
-  NationsResponse,
-  VehicleTypesResponse,
-  MediaPathResponse,
-} from '@/shared/api/encyclopediaDto'
-import { normalizeShips } from './normalizeShips'
-import { normalizeNations, normalizeShipTypes } from './normalizeReference'
+import type { Ship } from '../model/ship'
+import type { NationOption, ShipTypeOption } from '../model/encyclopediaReference'
 
-const STATIC_REFERENCE_QUERY = { staleTime: Infinity, gcTime: Infinity, retry: 2 } as const
+export type DegradedSource = never
 
-export type DegradedSource = 'nations' | 'vehicleTypes'
+interface ShipsIndexResponse {
+  ships: Ship[]
+  nations: NationOption[]
+  shipTypes: ShipTypeOption[]
+}
+
+const EMPTY: ShipsIndexResponse = { ships: [], nations: [], shipTypes: [] }
 
 export function useEncyclopedia() {
-  const nationsQuery = useQuery({
-    queryKey: ['encyclopedia', 'nations'],
-    queryFn: () => fetchJson<NationsResponse>(ENDPOINTS.nations),
-    ...STATIC_REFERENCE_QUERY,
+  const indexQuery = useQuery({
+    queryKey: ['ships-index'],
+    queryFn: () => fetchJson<ShipsIndexResponse>('/api/ships-index'),
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: 2,
   })
 
-  const vehicleTypesQuery = useQuery({
-    queryKey: ['encyclopedia', 'vehicleTypes'],
-    queryFn: () => fetchJson<VehicleTypesResponse>(ENDPOINTS.vehicleTypes),
-    ...STATIC_REFERENCE_QUERY,
-  })
-
-  const mediaPathQuery = useQuery({
-    queryKey: ['encyclopedia', 'mediaPath'],
-    queryFn: () => fetchJson<MediaPathResponse>(ENDPOINTS.mediaPath),
-    ...STATIC_REFERENCE_QUERY,
-  })
-
-  const mediaPath = computed(() => mediaPathQuery.data.value?.data ?? FALLBACK_MEDIA_PATH)
-
-  const areDictionariesSettled = computed(
-    () =>
-      !nationsQuery.isPending.value &&
-      !vehicleTypesQuery.isPending.value &&
-      !mediaPathQuery.isPending.value,
-  )
-
-  const shipsQuery = useQuery({
-    queryKey: ['encyclopedia', 'ships'],
-    enabled: areDictionariesSettled,
-    queryFn: async () => {
-      const response = await fetchJson<VehiclesResponse>(ENDPOINTS.vehicles)
-      return normalizeShips(response, {
-        nations: nationsQuery.data.value?.data ?? [],
-        vehicleTypes: vehicleTypesQuery.data.value?.data ?? {},
-        mediaPath: mediaPath.value,
-      })
-    },
-    ...STATIC_REFERENCE_QUERY,
-  })
-
-  const degradedSources = computed<DegradedSource[]>(() => {
-    const sources: DegradedSource[] = []
-    if (nationsQuery.isError.value) sources.push('nations')
-    if (vehicleTypesQuery.isError.value) sources.push('vehicleTypes')
-    return sources
-  })
+  const data = computed(() => indexQuery.data.value ?? EMPTY)
 
   return {
-    ships: computed(() => shipsQuery.data.value ?? []),
-    degradedSources,
-    nations: computed(() => normalizeNations(nationsQuery.data.value?.data ?? [], mediaPath.value)),
-    shipTypes: computed(() =>
-      normalizeShipTypes(vehicleTypesQuery.data.value?.data ?? {}, mediaPath.value),
-    ),
-    isLoading: computed(() => !areDictionariesSettled.value || shipsQuery.isPending.value),
-    hasFatalError: shipsQuery.isError,
-    retry: () => shipsQuery.refetch(),
+    ships: computed(() => data.value.ships),
+    nations: computed(() => data.value.nations),
+    shipTypes: computed(() => data.value.shipTypes),
+    degradedSources: computed<DegradedSource[]>(() => []),
+    isLoading: computed(() => indexQuery.isPending.value),
+    hasFatalError: computed(() => indexQuery.isError.value),
+    retry: () => indexQuery.refetch(),
   }
 }
